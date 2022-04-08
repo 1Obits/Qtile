@@ -1,9 +1,14 @@
-from typing import List  # noqa: F401
+from os import path
 
+from typing import List  # noqa: F401
+from libqtile import hook
 from libqtile import bar, layout, widget
+
 from libqtile.config import Click, Drag, Group, Key, Match, Screen
 from libqtile.lazy import lazy
 from libqtile.utils import guess_terminal
+
+import subprocess
 
 mod = "mod4"
 
@@ -98,9 +103,9 @@ layouts = [
 ]
 
 widget_defaults = dict(
-    font = "JetBrainsMono Nerd Font",
-    fontsize = 10,
-    padding = 0,
+    font="JetBrains Mono Nerd Font",
+    fontsize = 14,
+    padding=0,
 )
 extension_defaults = widget_defaults.copy()
 
@@ -110,40 +115,40 @@ screens = [
             [
                 #widget.CurrentLayout(),
                 widget.GroupBox(
-                    center_aligned = True,
-                    fontsize = 12,
-                    inactive = "#FFFFFF",
-                    active = "#80BFF7",
-                    rounded = False,
-                    padding_y = 0,
-                    padding_x = 0,
-                    disable_drag = True,
-                    highlight_method = 'line',
-                    urgent_alert_method = 'block',
-                    this_current_screen_border = "#FB5883",
-                    other_current_screen_border = "#FF6C6B",
-                    other_screen_border = "#DFDFDF",
-                    highlight_color = "#282A36",
-                    foreground = "#DFDFDF",
-                    background = "#282A36",
+                    center_aligned=True,
+                    fontsize=10,
+                    inactive="#FFFFFF",
+                    active="#80BFF7",
+                    rounded=False,
+                    padding_y=0,
+                    padding_x=0,
+                    disable_drag=True,
+                    highlight_method='line',
+                    urgent_alert_method='block',
+                    this_current_screen_border="#FB5883",
+                    other_current_screen_border="#FF6C6B",
+                    other_screen_border="#DFDFDF",
+                    highlight_color="#282A36",
+                    foreground="#DFDFDF",
+                    background="#282A36",
                 ),
 
                 widget.TextBox(
-                    text = '|',
-                    font = "JetBrainsMono Nerd Font",
-                    foreground = "#FFFFFF",
-                    background = "#282A36",
-                    padding = 2,
-                    fontsize = 18,
+                    text='|',
+                    font="JetBrainsMono Nerd Font",
+                    foreground="#FFFFFF",
+                    background="#282A36",
+                    padding=2,
+                    fontsize=18,
                 ),
 
                 widget.Prompt(),
                 widget.WindowName(
-                    font = "JetBrainsMono Bold",
-                    fontsize = 12,
-                    background = "#282A36",
-                    foreground = "#8258FA",
-                    max_chars = 50,
+                    font="JetBrains Mono Bold Nerd Font",
+                    fontsize=12,
+                    background="#282A36",
+                    foreground="#8258FA",
+                    max_chars=50,
                 ),
                 widget.Chord(
                     chords_colors={
@@ -152,114 +157,115 @@ screens = [
                     name_transform=lambda name: name.upper(),
                 ),
                 widget.TextBox(
-                    text = "", #nf-pl-right_hard_divider
-                    padding = 0,
-                    fontsize = 27,
-                    foreground = "#F7819F",
-                    background = "#282C34",
+                    text="", #nf-pl-right_hard_divider
+                    padding=0,
+                    fontsize=27,
+                    foreground="#F7819F",
+                    background="#282C34",
                 ),
                 widget.TextBox(
-                    text = '', #nf-fa-download
-                    fontsize = 14,
-                    foreground = "#000000",
-                    background = "#F7819F",
-                    padding = 4,
+                    text='', #nf-fa-download
+                    fontsize=14,
+                    foreground="#000000",
+                    background="#F7819F",
+                    padding=4,
                 ),
                 widget.CheckUpdates(
-                    distro = 'Arch',
-                    font = "JetBrainsMono Bold",
-                    fontsize = 12,
-                    background = "#F7819F",
-                    colour_have_updates = "#000000",
-                    colour_no_updates = "#000000",
-                    no_update_string = "0",
-                    display_format = "{updates}",
-                    update_interval = 1800,
-                    custom_command = "checkupdates",
-                    padding = 5,
+                    distro='Arch',
+                    font='JetBrainsMono Bold',
+                    fontsize=12,
+                    background="#F7819F",
+                    colour_have_updates="#000000",
+                    colour_no_updates="#000000",
+                    no_update_string="0",
+                    display_format="{updates}",
+                    update_interval=1800,
+                    custom_command="checkupdates",
+                    padding=5,
                 ),
                 widget.TextBox(
-                    text = "", #nf-pl-right_hard_divider
-                    padding = 0,
-                    fontsize = 27,
-                    foreground = "#88F98F",
-                    background = "#F7819F",
+                    text="", #nf-pl-right_hard_divider
+                    padding=0,
+                    fontsize=27,
+                    foreground="#88F98F",
+                    background="#F7819F",
                 ),
                 widget.TextBox(
-                    text = "", #nf-fa-feed
-                    fontsize = 14,
-                    foreground = "#000000",
-                    background = "#88F98F",
-                    padding = 4,
+                    text="", #nf-fa-feed
+                    fontsize=14,
+                    foreground="#000000",
+                    background="#88F98F",
+                    padding=4,
                 ),
                 widget.Net(
-                    font = "JetBrainsMono Bold",
+                    font="JetBrainsMono Bold",
                     #interface = None,
-                    format ='{down} ↓↑ {up}',
-                    background = "#88F98F",
-                    fontsize = 12,
-                    foreground = "#000000",
+                    format='{down} ↓↑ {up}',
+                    background="#88F98F",
+                    fontsize=12,
+                    foreground="#000000",
                 ),
                 widget.TextBox(
-                    text = "", #nf-pl-right_hard_divider
-                    padding = 0,
-                    background = "#88F98F",
-                    fontsize = 27,
-                    foreground = "#4E7CF9",
+                    text="", #nf-pl-right_hard_divider
+                    padding=0,
+                    background="#88F98F",
+                    fontsize=27,
+                    foreground="#4E7CF9",
                 ),
                 widget.TextBox(
-                    text = "", #nf-mdi-calendar_clock
-                    fontsize = 14,
-                    padding = 4,
-                    background = "#4E7CF9",
-                    foreground = "#000000",
+                    text="", #nf-mdi-calendar_clock
+                    fontsize=14,
+                    padding=4,
+                    background="#4E7CF9",
+                    foreground="#000000",
                 ),
                 widget.Clock(format='%Y/%m/%d - %H:%M',
-                    font = "JetBrainsMono Bold",
-                    fontsize = 12,
-                    foreground = "#000000",
-                    background = "#4E7CF9",
+                    font="JetBrainsMono Bold",
+                    fontsize=12,
+                    foreground="#000000",
+                    background="#4E7CF9",
                     #markup = True,
-                    padding = 3,
+                    padding=3,
                 ),
                 widget.TextBox(
-                    text = "", #nf-pl-right_hard_divider
-                    padding = 0,
-                    background = "#4E7CF9",
-                    fontsize = 27,
-                    foreground = '#282A36',
+                    text ="", #nf-pl-right_hard_divider
+                    padding=0,
+                    background="#4E7CF9",
+                    fontsize=27,
+                    foreground='#282A36',
                 ),
                 widget.Battery(
-                    background = "#282A36",
-                    format = '{char} {percent:2.0%}',
-                    charge_char = "", #nf-mdi-battery_charging
-                    full_char = "", #nf-mdi-battery
-                    discharge_char = "", #nf-mdi-battery_50
-                    empty_char = "", #nf-mdi-battery_outline
-                    low_percentage = 0.2,
-                    notify_below = True,
-                    foreground = "#BE81F7",
-                    update_interval = 60,
-                    fontsize = 12,
+                    background="#282A36",
+                    format='{char} {percent:2.0%}',
+                    charge_char="", #nf-mdi-battery_charging
+                    full_char="", #nf-mdi-battery
+                    discharge_char="", #nf-mdi-battery_50
+                    empty_char="", #nf-mdi-battery_outline
+                    low_percentage=0.2,
+                    notify_below=True,
+                    foreground="#BE81F7",
+                    update_interval=60,
+                    fontsize=12,
                 ),
                 widget.PulseVolume(
-                    channel = "master",
-                    padding = 3,
-                    background = "#282A36",
-                    emoji = "", #nf-fa-volume_up
-                    fontsize = 14,
-                    foreground = "#BE81F7",
+                    channel="master",
+                    padding=3,
+                    background="#282A36",
+                    emoji="", #nf-fa-volume_up
+                    fontsize=14,
+                    foreground="#BE81F7",
                 ),
-                widget.Systray(background = "#282A36"),
+                widget.Systray(background="#282A36"),
                 widget.QuickExit(
-                    background = "#282A36",
-                    foreground = "#BE81F7",
+                    fontsize=10,
+                    background="#282A36",
+                    foreground="#BE81F7",
                 ),
             ],
             20,
-            background = "#2F2E2F",
-            opacity = 0.95,
-            center_aligned = True
+            background="#2F2E2F",
+            opacity=1.00,
+            center_aligned=True
             # border_width=[2, 0, 2, 0],  # Draw top and bottom borders
             # border_color=["ff00ff", "000000", "ff00ff", "000000"]  # Borders are magenta
         ),
